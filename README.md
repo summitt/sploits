@@ -1,6 +1,6 @@
 # domains2scope
 
-This [Burp](https://portswigger.net/) extesion adds to [Burp](https://portswigger.net/) the ability to add or exclude domains to burp's scope by selecting one or many items in the Proxy History or Repeater and selecting either Domain2Scope or  !Domain2Scope.
+This [Burp](https://portswigger.net/) extension adds to [Burp](https://portswigger.net/) the ability to add or exclude domains to burp's scope by selecting one or many items in the Proxy History or Repeater and selecting either Domain2Scope or  !Domain2Scope.
 
 [Burp](https://portswigger.net/) currently has an option add items from the proxy history to the scope but this is very specific. It will only add the exact protocol and exact path to the scope.
 
