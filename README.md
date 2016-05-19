@@ -6,5 +6,11 @@ Burp currently has an option add items from the proxy history to the scope but t
 
 This plugin adds both http and https and only adds the domain w/o path information. 
 
+![Burp History: Right Click](/history-burp.png "Burp History: add or exclude domains from scope.")
 
 
+
+![Burp Scope](/burp-scope.png "Both HTTPS and HTTP added to scope with only the domains names.")
+
+
+You can check out the source code or download the jar from the [releases](https://github.com/summitt/domains2scope/releases)
