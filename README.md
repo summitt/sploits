@@ -41,7 +41,7 @@ This [Burp](https://portswigger.net/) extension also adds to [Burp](https://port
 
 This plugin adds both http and https and only adds the domain w/o path information. 
 
-###Note: The following screenshots show an older version of the plugin. The Domains2Scope has been replaces with 'Add All To Scope' and !Domains2Scope has been replaces with 'Remove All From Scope'
+###Note: The following screenshots show an older version of the plugin. The Domains2Scope has been replaced with 'Add All To Scope' and !Domains2Scope has been replaced with 'Remove All From Scope'
 
 ![Burp History: Right Click](/history-burp.png "Burp History: add or exclude domains from scope.")
 
