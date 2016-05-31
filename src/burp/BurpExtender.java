@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +36,9 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 	@Override
 	public List<JMenuItem> createMenuItems(IContextMenuInvocation inv) {
 		
-		JMenuItem inc = new JMenuItem("Domain2Scope");
+		JMenuItem inc = new JMenuItem("Add All To Scope");
 		inc.addActionListener(new ActionJackson(inv, cb, false)); // This will add the domain to the scope.
-		JMenuItem exc = new JMenuItem("!Domain2Scope");
+		JMenuItem exc = new JMenuItem("Remove All From Scope");
 		exc.addActionListener(new ActionJackson(inv, cb, true)); // This will add the domain to the scope.
 		JMenu sub = new JMenu("sploits");
 		JMenu config = new JMenu("sploits config");
@@ -298,15 +302,19 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 		
 		Properties prop = new Properties();
 		try {
+			URL url = new URL(URL);
+			URLConnection conn = null;
+		
 			if(proxy != null && !proxy.equals("")){
 				String [] splits = proxy.split(":");
-				System.setProperty("http.proxyHost", splits[0]);
-				System.setProperty("http.proxyPort", splits[1]);
+				Proxy prox = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(splits[0], Integer.parseInt(splits[1])));
+				conn = url.openConnection(prox);
+				
+			}else{
+				conn = url.openConnection();
 			}
-
-			URL url = new URL(URL);
 			
-			InputStream in = url.openStream();
+			InputStream in = conn.getInputStream();
 			Reader reader = new InputStreamReader(in, "UTF-8"); // for example
 			// load a properties file
 			prop.load(reader);
@@ -318,9 +326,7 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 					sploits.put("r_"+title +key, prop.getProperty(""+key));
 				
 			}
-			if(proxy != null && !proxy.equals("")){
-				System.setProperty("http.proxyHost", "");
-			}
+			
 			
 
 		} catch (IOException ex) {

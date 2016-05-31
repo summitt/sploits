@@ -59,7 +59,7 @@ public class ActionJackson implements ActionListener{
 			caller=PropKey;
 		
 		//If adding a domian to scope then do this:
-		if(caller.equals("Domains2Scope") || caller.equals("!Domains2Scope")){
+		if(caller.equals("Add All To Scope") || caller.equals("Remove All From Scope")){
 			for(IHttpRequestResponse o : inv.getSelectedMessages()){
 				String host = o.getUrl().getHost();
 				//if(!cb.isInScope(o.getUrl())){
