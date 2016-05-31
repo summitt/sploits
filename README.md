@@ -31,6 +31,8 @@ Below is the submenu containing the title from the above hosted properties file.
 
 ![](/sploitpropsmenu.png )
 
+My default listing for common sploits can be found [here](https://raw.githubusercontent.com/summitt/sploits-default/master/sploits.properties)
+
 
 
 ## Add All or Remove All from scope
