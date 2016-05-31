@@ -1,6 +1,8 @@
 #sploits
 ##A [Burp Extension](https://portswigger.net/) with predefined payloads that can be injected into your requests and responses.
 
+Download the JAR file [here](https://github.com/summitt/sploits/releases).
+
 This [Burp](https://portswigger.net/) extension  adds to [Burp](https://portswigger.net/) the 'sploits' right click menue to Repeater. This allows users to select many common XSS or SQLi payloads that replace text in Repeater that is selected. If no text is selected then the payload is added to where the mouse pointer is currently located. 
 
 Sploits lets users create a local text file with their custom exploits or use files from remote sources. 
