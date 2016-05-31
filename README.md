@@ -10,7 +10,10 @@ Sploits lets users create a local text file with their custom exploits or use fi
 ## sploits naming 
 The name of the sploit can change the submenu for the sploit. The '.' is used to separate normal menu items from sub menus. 
 If the name of the sploit is 'basicXSS' then it will show up in the top menu. If the sploit is named 'xss.basic' then it will show up under a submenu named 'xss'.
+
 ![](/sploitname.png )
+
+
 ![](/sploitmenu.png )
 
 The following names are reserved.
@@ -21,6 +24,8 @@ The following names are reserved.
 If you want to host a sploit properties file then the same rule apply as mentioned above with one exception. It is highly recommended that you add a property called "title" to your properties file. This will create a submenu with your title name so that all your contributions are contained together.
 
 ![](/sploitprops.png )
+
+
 ![](/sploitpropsmenu.png )
 
 
@@ -33,7 +38,7 @@ This [Burp](https://portswigger.net/) extension also adds to [Burp](https://port
 
 This plugin adds both http and https and only adds the domain w/o path information. 
 
-Note: The following screenshots show an older version of the plugin. The Domains2Scope has been replaces with 'Add All To Scope' and !Domains2Scope has been replaces with 'Remove All From Scope'
+###Note: The following screenshots show an older version of the plugin. The Domains2Scope has been replaces with 'Add All To Scope' and !Domains2Scope has been replaces with 'Remove All From Scope'
 
 ![Burp History: Right Click](/history-burp.png "Burp History: add or exclude domains from scope.")
 
