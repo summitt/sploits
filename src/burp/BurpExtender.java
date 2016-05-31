@@ -39,11 +39,79 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 		JMenu sub = new JMenu("sploits");
 		JMenu config = new JMenu("sploits config");
 		//Convert to treemap to automatically sort results before displaying in the menu
-		Map<String, String> sorted = new TreeMap<String, String>(sploits); 
-		for(String sploit : sorted.keySet()){
-			JMenuItem spm = new JMenuItem(sploit);
-			spm.addActionListener(new ActionJackson(inv, cb, sploits));
-			sub.add(spm);
+		Map<String, String> sorted = new TreeMap<String, String>(sploits);
+		HashMap<String,TreeMap<String,Object>> remoteSubMenues = new HashMap<String,TreeMap<String,Object>>();
+		HashMap<String,JMenu> addedSubMenues = new HashMap<String,JMenu>();
+		for(String sploitKey : sorted.keySet()){
+			
+			if(sploitKey.startsWith("r_")){  // THis is a remote repo.. needs its own menu
+				String title = sploitKey.substring(2, sploitKey.indexOf("_", 2));
+				if(!remoteSubMenues.containsKey(title)){
+					remoteSubMenues.put(title, new TreeMap<String, Object>());
+				}
+				String subtitle = sploitKey.replace("r_"+title+"_", "");
+				if(!subtitle.contains(".")){
+					JMenuItem jmi = new JMenuItem(subtitle);
+					jmi.addActionListener(new ActionJackson(inv, cb, sploits, sploitKey));
+					remoteSubMenues.get(title).put(subtitle, jmi);
+				}else{
+					String subsubmenu = subtitle.split("\\.")[0];
+					
+					if(!remoteSubMenues.get(title).containsKey(subsubmenu)){
+						remoteSubMenues.get(title).put(subsubmenu, new TreeMap<String, JMenuItem>());
+					}
+					
+					JMenuItem jmi = new JMenuItem(subtitle.split("\\.")[1]);
+					jmi.addActionListener(new ActionJackson(inv, cb, sploits, sploitKey));
+					((TreeMap<String, JMenuItem>)remoteSubMenues.get(title).get(subsubmenu)).put(subtitle.split("\\.")[1], jmi);
+					
+					
+					
+				}
+				
+				
+				
+				
+			}else{ // These are local user sploits
+				if(sploitKey.contains(".")){ // these items have a sub menu
+					String subkey = sploitKey.split("\\.")[0];
+					if(!addedSubMenues.containsKey(subkey)){
+						addedSubMenues.put(subkey, new JMenu(subkey));
+					}
+					JMenuItem subsub = new JMenuItem(sploitKey.split("\\.")[1]);
+					subsub.addActionListener(new ActionJackson(inv, cb, sploits, sploitKey));
+					addedSubMenues.get(subkey).add(subsub);
+				}else{  // these are normal items
+					JMenuItem spm = new JMenuItem(sploitKey);
+					spm.addActionListener(new ActionJackson(inv, cb, sploits, sploitKey));
+					sub.add(spm);
+				}
+			}
+			
+		}
+		// Add User submenues
+		for(String skey :addedSubMenues.keySet()){
+			sub.add(addedSubMenues.get(skey));
+		}
+		
+		//add remote submenues
+		for(String rkey : remoteSubMenues.keySet()){
+			TreeMap<String,Object> hms = remoteSubMenues.get(rkey);
+			JMenu remote = new JMenu(rkey);
+			for(String rrkey : hms.keySet()){
+				if(hms.get(rrkey).getClass().getName().contains("JMenuItem")){
+					remote.add((JMenuItem)hms.get(rrkey));
+				}else{ // we have a treemap instead
+					JMenu remoteMenu = new JMenu(rrkey);
+					TreeMap<String, JMenuItem> items = (TreeMap<String, JMenuItem>)hms.get(rrkey);
+					for(String item : items.keySet()){
+						remoteMenu.add(items.get(item));
+					}
+					remote.add(remoteMenu);
+				}
+			}
+			sub.add(remote);
+			
 		}
 		JMenuItem update = new JMenuItem("Refresh sploits");
 		update.addActionListener(new ActionListener(){

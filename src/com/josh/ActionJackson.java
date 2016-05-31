@@ -23,6 +23,7 @@ public class ActionJackson implements ActionListener{
 	private IBurpExtenderCallbacks cb;
 	private boolean isExclude=false;
 	private HashMap<String,String> sploits;
+	private String PropKey;
 	
 	public ActionJackson(IContextMenuInvocation inv, IBurpExtenderCallbacks callbacks, boolean isExclude ){
 		this.inv = inv;
@@ -36,6 +37,14 @@ public class ActionJackson implements ActionListener{
 		this.sploits = sploits;
 		
 	}
+	public ActionJackson(IContextMenuInvocation inv, IBurpExtenderCallbacks callbacks, HashMap<String,String>sploits, String PropKey){
+		this.inv = inv;
+		this.cb = callbacks;
+		this.sploits = sploits;
+		this.PropKey = PropKey;
+		
+	}
+
 	public ActionJackson(IContextMenuInvocation inv, IBurpExtenderCallbacks callbacks){
 		this.inv = inv;
 		this.cb = callbacks;
@@ -46,6 +55,8 @@ public class ActionJackson implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		
 		String caller = e.getActionCommand();
+		if(PropKey != null && !PropKey.equals(""))
+			caller=PropKey;
 		
 		//If adding a domian to scope then do this:
 		if(caller.equals("Domains2Scope") || caller.equals("!Domains2Scope")){
