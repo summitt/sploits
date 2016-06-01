@@ -16,7 +16,9 @@ import java.util.Properties;
 
 import burp.IBurpExtenderCallbacks;
 import burp.IContextMenuInvocation;
+import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
+import burp.IRequestInfo;
 
 public class ActionJackson implements ActionListener{
 	private IContextMenuInvocation inv;
@@ -102,28 +104,39 @@ public class ActionJackson implements ActionListener{
 			return;
 		int start = inv.getSelectionBounds()[0];
 		int stop = inv.getSelectionBounds()[1];
+		IExtensionHelpers hp=cb.getHelpers();
+		
+		
 		if(replace.getClass().getName().equals("java.lang.String")){
 			for(IHttpRequestResponse o : inv.getSelectedMessages()){
-				String all = getMessage(o);
-				String Selected = all.substring(start, stop);
-				String begin = all.substring(0, start);
-				String end = all.substring(stop);
-				all = begin + replace + end;
-				setMessage(o, all);
-				break;
+				try{
+					String all = getMessage(o);
+					String Selected = all.substring(start, stop);
+					String begin = all.substring(0, start);
+					String end = all.substring(stop);
+					all = begin + replace + end;
+					setMessage(o, all);
+					break;
+				}catch(Exception ex){
+					cb.printError("Not a valid injection point");
+				}
 			}
 		}else{
 			for(IHttpRequestResponse o : inv.getSelectedMessages()){
-				byte[] all = getMsgBytes(o);
-				byte[] begin = Arrays.copyOfRange(all, 0, start);
-				byte[] end = Arrays.copyOfRange(all, stop, all.length);
-				byte [] r = (byte[])replace;
-				byte [] out = new byte[begin.length + end.length + r.length];
-				System.arraycopy(begin, 0, out, 0, begin.length);
-				System.arraycopy(r, 0, out, begin.length, r.length);
-				System.arraycopy(end, 0, out, r.length+begin.length, end.length);
-				setMsgBytes(o,out);
-				break;
+				try{
+					byte[] all = getMsgBytes(o);
+					byte[] begin = Arrays.copyOfRange(all, 0, start);
+					byte[] end = Arrays.copyOfRange(all, stop, all.length);
+					byte [] r = (byte[])replace;
+					byte [] out = new byte[begin.length + end.length + r.length];
+					System.arraycopy(begin, 0, out, 0, begin.length);
+					System.arraycopy(r, 0, out, begin.length, r.length);
+					System.arraycopy(end, 0, out, r.length+begin.length, end.length);
+					setMsgBytes(o,out);
+					break;
+				}catch(Exception ex){
+					cb.printError("Not a valid injection point");
+				}
 			}
 			
 		}
@@ -138,7 +151,9 @@ public class ActionJackson implements ActionListener{
 	}
 	
 	private String getMessage(IHttpRequestResponse o){
+		
 		return (new String(isRequest()? o.getRequest(): o.getResponse()));
+	
 	}
 	private byte[] getMsgBytes(IHttpRequestResponse o){
 		return isRequest()? o.getRequest(): o.getResponse();
