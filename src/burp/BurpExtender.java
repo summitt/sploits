@@ -1,5 +1,7 @@
 package burp;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -64,6 +66,9 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 		
 		if(isRequest(inv) || isResponse(inv)){
 			JMenu sub = new JMenu("sploits");
+			sub.setMnemonic(KeyEvent.VK_S);
+			//sub.setForeground(Color.red);
+			//sub.setFont(new Font("courier", Font.PLAIN, 24));
 			JMenu config = new JMenu("sploits config");
 			//Convert to treemap to automatically sort results before displaying in the menu
 			Map<String, String> sorted = new TreeMap<String, String>(sploits);
@@ -71,6 +76,7 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 			HashMap<String,TreeMap<String,Object>> remoteSubMenues = new HashMap<String,TreeMap<String,Object>>();
 			//Normal Sub Menu collections
 			HashMap<String,JMenu> addedSubMenues = new HashMap<String,JMenu>();
+			int cmdNum = 1;
 			for(String sploitKey : sorted.keySet()){
 				
 				if(sploitKey.startsWith("r_")){  // THis is a remote repo.. needs its own menu
@@ -82,6 +88,7 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 					if(!subtitle.contains(".")){
 						JMenuItem jmi = new JMenuItem(subtitle);
 						jmi.setToolTipText(sploits.get(sploitKey));
+						//jmi.setFont(new Font("courier", Font.PLAIN, 24));
 						jmi.addActionListener(new ActionJackson(inv, cb, sploits, sploitKey));
 						remoteSubMenues.get(title).put(subtitle, jmi);
 					}else{
@@ -93,6 +100,7 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 						//OMG where ami?!?!... this should have been a recursive function
 						JMenuItem jmi = new JMenuItem(subtitle.split("\\.")[1]);
 						jmi.setToolTipText(sploits.get(sploitKey));
+						//jmi.setFont(new Font("courier", Font.PLAIN, 24));
 						jmi.addActionListener(new ActionJackson(inv, cb, sploits, sploitKey));
 						((TreeMap<String, JMenuItem>)remoteSubMenues.get(title).get(subsubmenu)).put(subtitle.split("\\.")[1], jmi);
 						
@@ -102,15 +110,21 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 					if(sploitKey.contains(".")){ // these items have a sub menu
 						String subkey = sploitKey.split("\\.")[0];
 						if(!addedSubMenues.containsKey(subkey)){
+							JMenu submenu = new JMenu(subkey);
+							//submenu.setFont(new Font("courier", Font.PLAIN, 24));
 							addedSubMenues.put(subkey, new JMenu(subkey));
 						}
 						JMenuItem subsub = new JMenuItem(sploitKey.split("\\.")[1]);
 						subsub.setToolTipText(sploits.get(sploitKey));
+						//subsub.setFont(new Font("courier", Font.PLAIN, 24));
 						subsub.addActionListener(new ActionJackson(inv, cb, sploits, sploitKey));
 						addedSubMenues.get(subkey).add(subsub);
 					}else{  // these are normal items
 						JMenuItem spm = new JMenuItem(sploitKey);
+						if(cmdNum <=9)
+							spm.setAccelerator(KeyStroke.getKeyStroke("shift " + cmdNum));
 						spm.setToolTipText(sploits.get(sploitKey));
+						//spm.setFont(new Font("courier", Font.PLAIN, 24));
 						spm.addActionListener(new ActionJackson(inv, cb, sploits, sploitKey));
 						sub.add(spm);
 					}
@@ -119,6 +133,7 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 			}
 			// Add User submenues
 			for(String skey :addedSubMenues.keySet()){
+				//addedSubMenues.get(skey).setFont(new Font("courier", Font.PLAIN, 24));
 				sub.add(addedSubMenues.get(skey));
 			}
 			
@@ -126,11 +141,13 @@ public class BurpExtender implements IBurpExtender,IContextMenuFactory{
 			for(String rkey : remoteSubMenues.keySet()){
 				TreeMap<String,Object> hms = remoteSubMenues.get(rkey);
 				JMenu remote = new JMenu(rkey);
+				//remote.setFont(new Font("courier", Font.PLAIN, 24));
 				for(String rrkey : hms.keySet()){
 					if(hms.get(rrkey).getClass().getName().contains("JMenuItem")){
 						remote.add((JMenuItem)hms.get(rrkey));
 					}else{ // we have a treemap instead
 						JMenu remoteMenu = new JMenu(rrkey);
+						//remoteMenu.setFont(new Font("courier", Font.PLAIN, 24));
 						TreeMap<String, JMenuItem> items = (TreeMap<String, JMenuItem>)hms.get(rrkey);
 						for(String item : items.keySet()){
 							remoteMenu.add(items.get(item));
